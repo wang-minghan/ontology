@@ -1,0 +1,836 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex:    <http://asiainfo.com/example-owl#> .
+
+##################################
+# 基础抽象类与通用语义（禁止变动）
+##################################
+
+ex:Entity a owl:Class ;
+  rdfs:subClassOf prov:Entity ;
+  rdfs:label "实体"@zh .
+
+ex:Object a owl:Class ;
+  rdfs:subClassOf ex:Entity ;
+  rdfs:label "本体对象"@zh .
+
+ex:Action a owl:Class ;
+  rdfs:subClassOf prov:Activity ;
+  rdfs:label "行动"@zh .
+
+ex:Function a owl:Class ;
+  rdfs:subClassOf prov:Activity ;
+  rdfs:label "决策/逻辑函数"@zh .
+
+# 供导入代码识别的注解属性（建议把 isTitle 也声明出来）
+ex:isPrimaryKey a owl:AnnotationProperty ;
+  rdfs:label "是否主键"@zh .
+
+ex:isTitle a owl:AnnotationProperty ;
+  rdfs:label "是否标题"@zh .
+
+# 用于指定对象属性关联时使用的具体字段
+ex:domainAttribute a owl:AnnotationProperty ;
+  rdfs:label "域属性"@zh ;
+  rdfs:comment "指定对象属性的域端使用哪个数据属性建立关联"@zh .
+
+ex:rangeAttribute a owl:AnnotationProperty ;
+  rdfs:label "值域属性"@zh ;
+  rdfs:comment "指定对象属性的值域端使用哪个数据属性建立关联"@zh .
+
+# 绑定关系与自定义关系“基类”
+ex:bindAction a owl:ObjectProperty ;
+  rdfs:label "本体对象关联行动"@zh ;
+  rdfs:domain ex:Object ;
+  rdfs:range ex:Action .
+
+ex:bindFunction a owl:ObjectProperty ;
+  rdfs:label "本体对象关联函数"@zh ;
+  rdfs:domain ex:Object ;
+  rdfs:range ex:Function .
+
+ex:custom_relation a owl:ObjectProperty ;
+  rdfs:label "自定义对象与对象之间的关系"@zh .
+
+
+##################################
+# 批量对象定义（自动生成）
+##################################
+
+ex:Product a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "产品"@zh ;
+  rdfs:comment "平台上销售的商品" .
+
+
+ex:Category a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "品类"@zh ;
+  rdfs:comment "商品所属分类" .
+
+
+ex:Inventory a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "库存"@zh ;
+  rdfs:comment "库存批次记录" .
+
+
+ex:Supplier a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "供应商"@zh ;
+  rdfs:comment "提供商品的供应商" .
+
+
+ex:Warehouse a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "仓库"@zh ;
+  rdfs:comment "仓储位置" .
+
+
+ex:Shipment a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "发货"@zh ;
+  rdfs:comment "一次发货批次" .
+
+
+ex:Delivery a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "配送"@zh ;
+  rdfs:comment "最终配送事件" .
+
+
+ex:Customer a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "客户"@zh ;
+  rdfs:comment "下单的客户实体" .
+
+
+ex:Address a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "地址"@zh ;
+  rdfs:comment "地理地址信息" .
+
+
+ex:Payment a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "支付"@zh ;
+  rdfs:comment "支付事务" .
+
+
+ex:Invoice a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "发票"@zh ;
+  rdfs:comment "开具的发票记录" .
+
+
+ex:Return a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "退货"@zh ;
+  rdfs:comment "商品退货记录" .
+
+
+ex:Refund a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "退款"@zh ;
+  rdfs:comment "退款事务" .
+
+
+ex:Promotion a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "促销"@zh ;
+  rdfs:comment "营销促销活动" .
+
+
+ex:Coupon a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "券"@zh ;
+  rdfs:comment "优惠券" .
+
+
+ex:Review a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "评价"@zh ;
+  rdfs:comment "用户评价" .
+
+
+ex:SupportTicket a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "工单"@zh ;
+  rdfs:comment "售后支持工单" .
+
+
+ex:Carrier a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "承运商"@zh ;
+  rdfs:comment "物流承运商" .
+
+
+ex:Route a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "线路"@zh ;
+  rdfs:comment "物流运输线路" .
+
+
+ex:Incident a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "事件"@zh ;
+  rdfs:comment "运输或仓储异常事件" .
+
+
+ex:Forecast a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "预测"@zh ;
+  rdfs:comment "需求预测结果" .
+
+
+ex:Order a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "订单"@zh ;
+  rdfs:comment "客户订单（补充：被多组关系使用）" .
+
+##################################
+# 批量数据属性定义（自动生成）
+##################################
+
+# Product 属性
+ex:ProductID a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "Product唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:ProductName a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "Product名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Category 属性
+ex:CategoryID a owl:DatatypeProperty ;
+  rdfs:domain ex:Category ;
+  rdfs:range xsd:string ;
+  rdfs:label "Category唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:CategoryName a owl:DatatypeProperty ;
+  rdfs:domain ex:Category ;
+  rdfs:range xsd:string ;
+  rdfs:label "Category名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Inventory 属性
+ex:InventoryID a owl:DatatypeProperty ;
+  rdfs:domain ex:Inventory ;
+  rdfs:range xsd:string ;
+  rdfs:label "Inventory唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:InventoryName a owl:DatatypeProperty ;
+  rdfs:domain ex:Inventory ;
+  rdfs:range xsd:string ;
+  rdfs:label "Inventory名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Supplier 属性
+ex:SupplierID a owl:DatatypeProperty ;
+  rdfs:domain ex:Supplier ;
+  rdfs:range xsd:string ;
+  rdfs:label "Supplier唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:SupplierName a owl:DatatypeProperty ;
+  rdfs:domain ex:Supplier ;
+  rdfs:range xsd:string ;
+  rdfs:label "Supplier名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Warehouse 属性
+ex:WarehouseID a owl:DatatypeProperty ;
+  rdfs:domain ex:Warehouse ;
+  rdfs:range xsd:string ;
+  rdfs:label "Warehouse唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:WarehouseName a owl:DatatypeProperty ;
+  rdfs:domain ex:Warehouse ;
+  rdfs:range xsd:string ;
+  rdfs:label "Warehouse名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Shipment 属性
+ex:ShipmentID a owl:DatatypeProperty ;
+  rdfs:domain ex:Shipment ;
+  rdfs:range xsd:string ;
+  rdfs:label "Shipment唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:ShipmentName a owl:DatatypeProperty ;
+  rdfs:domain ex:Shipment ;
+  rdfs:range xsd:string ;
+  rdfs:label "Shipment名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Delivery 属性
+ex:DeliveryID a owl:DatatypeProperty ;
+  rdfs:domain ex:Delivery ;
+  rdfs:range xsd:string ;
+  rdfs:label "Delivery唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:DeliveryName a owl:DatatypeProperty ;
+  rdfs:domain ex:Delivery ;
+  rdfs:range xsd:string ;
+  rdfs:label "Delivery名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Customer 属性
+ex:CustomerID a owl:DatatypeProperty ;
+  rdfs:domain ex:Customer ;
+  rdfs:range xsd:string ;
+  rdfs:label "Customer唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:CustomerName a owl:DatatypeProperty ;
+  rdfs:domain ex:Customer ;
+  rdfs:range xsd:string ;
+  rdfs:label "Customer名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Address 属性
+ex:AddressID a owl:DatatypeProperty ;
+  rdfs:domain ex:Address ;
+  rdfs:range xsd:string ;
+  rdfs:label "Address唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:AddressName a owl:DatatypeProperty ;
+  rdfs:domain ex:Address ;
+  rdfs:range xsd:string ;
+  rdfs:label "Address名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Payment 属性
+ex:PaymentID a owl:DatatypeProperty ;
+  rdfs:domain ex:Payment ;
+  rdfs:range xsd:string ;
+  rdfs:label "Payment唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:PaymentName a owl:DatatypeProperty ;
+  rdfs:domain ex:Payment ;
+  rdfs:range xsd:string ;
+  rdfs:label "Payment名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Invoice 属性
+ex:InvoiceID a owl:DatatypeProperty ;
+  rdfs:domain ex:Invoice ;
+  rdfs:range xsd:string ;
+  rdfs:label "Invoice唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:InvoiceName a owl:DatatypeProperty ;
+  rdfs:domain ex:Invoice ;
+  rdfs:range xsd:string ;
+  rdfs:label "Invoice名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Return 属性
+ex:ReturnID a owl:DatatypeProperty ;
+  rdfs:domain ex:Return ;
+  rdfs:range xsd:string ;
+  rdfs:label "Return唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:ReturnName a owl:DatatypeProperty ;
+  rdfs:domain ex:Return ;
+  rdfs:range xsd:string ;
+  rdfs:label "Return名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Refund 属性
+ex:RefundID a owl:DatatypeProperty ;
+  rdfs:domain ex:Refund ;
+  rdfs:range xsd:string ;
+  rdfs:label "Refund唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:RefundName a owl:DatatypeProperty ;
+  rdfs:domain ex:Refund ;
+  rdfs:range xsd:string ;
+  rdfs:label "Refund名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Promotion 属性
+ex:PromotionID a owl:DatatypeProperty ;
+  rdfs:domain ex:Promotion ;
+  rdfs:range xsd:string ;
+  rdfs:label "Promotion唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:PromotionName a owl:DatatypeProperty ;
+  rdfs:domain ex:Promotion ;
+  rdfs:range xsd:string ;
+  rdfs:label "Promotion名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Coupon 属性
+ex:CouponID a owl:DatatypeProperty ;
+  rdfs:domain ex:Coupon ;
+  rdfs:range xsd:string ;
+  rdfs:label "Coupon唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:CouponName a owl:DatatypeProperty ;
+  rdfs:domain ex:Coupon ;
+  rdfs:range xsd:string ;
+  rdfs:label "Coupon名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Review 属性
+ex:ReviewID a owl:DatatypeProperty ;
+  rdfs:domain ex:Review ;
+  rdfs:range xsd:string ;
+  rdfs:label "Review唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:ReviewName a owl:DatatypeProperty ;
+  rdfs:domain ex:Review ;
+  rdfs:range xsd:string ;
+  rdfs:label "Review名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# SupportTicket 属性
+ex:SupportTicketID a owl:DatatypeProperty ;
+  rdfs:domain ex:SupportTicket ;
+  rdfs:range xsd:string ;
+  rdfs:label "SupportTicket唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:SupportTicketName a owl:DatatypeProperty ;
+  rdfs:domain ex:SupportTicket ;
+  rdfs:range xsd:string ;
+  rdfs:label "SupportTicket名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Carrier 属性
+ex:CarrierID a owl:DatatypeProperty ;
+  rdfs:domain ex:Carrier ;
+  rdfs:range xsd:string ;
+  rdfs:label "Carrier唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:CarrierName a owl:DatatypeProperty ;
+  rdfs:domain ex:Carrier ;
+  rdfs:range xsd:string ;
+  rdfs:label "Carrier名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Route 属性
+ex:RouteID a owl:DatatypeProperty ;
+  rdfs:domain ex:Route ;
+  rdfs:range xsd:string ;
+  rdfs:label "Route唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:RouteName a owl:DatatypeProperty ;
+  rdfs:domain ex:Route ;
+  rdfs:range xsd:string ;
+  rdfs:label "Route名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Incident 属性
+ex:IncidentID a owl:DatatypeProperty ;
+  rdfs:domain ex:Incident ;
+  rdfs:range xsd:string ;
+  rdfs:label "Incident唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:IncidentName a owl:DatatypeProperty ;
+  rdfs:domain ex:Incident ;
+  rdfs:range xsd:string ;
+  rdfs:label "Incident名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Forecast 属性
+ex:ForecastID a owl:DatatypeProperty ;
+  rdfs:domain ex:Forecast ;
+  rdfs:range xsd:string ;
+  rdfs:label "Forecast唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:ForecastName a owl:DatatypeProperty ;
+  rdfs:domain ex:Forecast ;
+  rdfs:range xsd:string ;
+  rdfs:label "Forecast名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+# Order 属性
+ex:OrderID a owl:DatatypeProperty ;
+  rdfs:domain ex:Order ;
+  rdfs:range xsd:string ;
+  rdfs:label "Order唯一标识"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:OrderName a owl:DatatypeProperty ;
+  rdfs:domain ex:Order ;
+  rdfs:range xsd:string ;
+  rdfs:label "Order名称"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+##################################
+# 关系定义（自动生成，多对一/一对多）
+##################################
+
+# Product -> Category
+ex:inCategory a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Product ;
+    rdfs:range ex:Category ;
+    rdfs:label "inCategory"@zh ;
+    ex:domainAttribute ex:ProductID ;
+    ex:rangeAttribute ex:CategoryID .
+
+# Category -> Product
+ex:hasProduct a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Category ;
+    rdfs:range ex:Product ;
+    rdfs:label "hasProduct"@zh ;
+    ex:domainAttribute ex:CategoryID ;
+    ex:rangeAttribute ex:ProductID .
+
+# Inventory -> Product
+ex:ofProduct a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Inventory ;
+    rdfs:range ex:Product ;
+    rdfs:label "ofProduct"@zh ;
+    ex:domainAttribute ex:InventoryID ;
+    ex:rangeAttribute ex:ProductID .
+
+# Product -> Inventory
+ex:hasInventory a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Product ;
+    rdfs:range ex:Inventory ;
+    rdfs:label "hasInventory"@zh ;
+    ex:domainAttribute ex:ProductID ;
+    ex:rangeAttribute ex:InventoryID .
+
+# Inventory -> Warehouse
+ex:storedIn a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Inventory ;
+    rdfs:range ex:Warehouse ;
+    rdfs:label "storedIn"@zh ;
+    ex:domainAttribute ex:InventoryID ;
+    ex:rangeAttribute ex:WarehouseID .
+
+# Warehouse -> Inventory
+ex:holdsInventory a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Warehouse ;
+    rdfs:range ex:Inventory ;
+    rdfs:label "holdsInventory"@zh ;
+    ex:domainAttribute ex:WarehouseID ;
+    ex:rangeAttribute ex:InventoryID .
+
+# Shipment -> Warehouse
+ex:shipsFrom a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Shipment ;
+    rdfs:range ex:Warehouse ;
+    rdfs:label "shipsFrom"@zh ;
+    ex:domainAttribute ex:ShipmentID ;
+    ex:rangeAttribute ex:WarehouseID .
+
+# Warehouse -> Shipment
+ex:originOfShipment a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Warehouse ;
+    rdfs:range ex:Shipment ;
+    rdfs:label "originOfShipment"@zh ;
+    ex:domainAttribute ex:WarehouseID ;
+    ex:rangeAttribute ex:ShipmentID .
+
+# Shipment -> Carrier
+ex:handledBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Shipment ;
+    rdfs:range ex:Carrier ;
+    rdfs:label "handledBy"@zh ;
+    ex:domainAttribute ex:ShipmentID ;
+    ex:rangeAttribute ex:CarrierID .
+
+# Carrier -> Shipment
+ex:handlesShipment a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Carrier ;
+    rdfs:range ex:Shipment ;
+    rdfs:label "handlesShipment"@zh ;
+    ex:domainAttribute ex:CarrierID ;
+    ex:rangeAttribute ex:ShipmentID .
+
+# Delivery -> Shipment
+ex:deliversShipment a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Delivery ;
+    rdfs:range ex:Shipment ;
+    rdfs:label "deliversShipment"@zh ;
+    ex:domainAttribute ex:DeliveryID ;
+    ex:rangeAttribute ex:ShipmentID .
+
+# Shipment -> Delivery
+ex:shipmentDeliveredBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Shipment ;
+    rdfs:range ex:Delivery ;
+    rdfs:label "shipmentDeliveredBy"@zh ;
+    ex:domainAttribute ex:ShipmentID ;
+    ex:rangeAttribute ex:DeliveryID .
+
+# Order -> Customer
+ex:orderedBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Order ;
+    rdfs:range ex:Customer ;
+    rdfs:label "orderedBy"@zh ;
+    ex:domainAttribute ex:OrderID ;
+    ex:rangeAttribute ex:CustomerID .
+
+# Customer -> Order
+ex:placesOrder a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Customer ;
+    rdfs:range ex:Order ;
+    rdfs:label "placesOrder"@zh ;
+    ex:domainAttribute ex:CustomerID ;
+    ex:rangeAttribute ex:OrderID .
+
+# Order -> Payment
+ex:paidByPayment a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Order ;
+    rdfs:range ex:Payment ;
+    rdfs:label "paidByPayment"@zh ;
+    ex:domainAttribute ex:OrderID ;
+    ex:rangeAttribute ex:PaymentID .
+
+# Payment -> Order
+ex:paymentForOrder a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Payment ;
+    rdfs:range ex:Order ;
+    rdfs:label "paymentForOrder"@zh ;
+    ex:domainAttribute ex:PaymentID ;
+    ex:rangeAttribute ex:OrderID .
+
+# Payment -> Invoice
+ex:hasInvoice a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Payment ;
+    rdfs:range ex:Invoice ;
+    rdfs:label "hasInvoice"@zh ;
+    ex:domainAttribute ex:PaymentID ;
+    ex:rangeAttribute ex:InvoiceID .
+
+# Invoice -> Payment
+ex:invoiceOfPayment a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Invoice ;
+    rdfs:range ex:Payment ;
+    rdfs:label "invoiceOfPayment"@zh ;
+    ex:domainAttribute ex:InvoiceID ;
+    ex:rangeAttribute ex:PaymentID .
+
+# Return -> Order
+ex:returnOfOrder a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Return ;
+    rdfs:range ex:Order ;
+    rdfs:label "returnOfOrder"@zh ;
+    ex:domainAttribute ex:ReturnID ;
+    ex:rangeAttribute ex:OrderID .
+
+# Order -> Return
+ex:hasReturn a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Order ;
+    rdfs:range ex:Return ;
+    rdfs:label "hasReturn"@zh ;
+    ex:domainAttribute ex:OrderID ;
+    ex:rangeAttribute ex:ReturnID .
+
+# Refund -> Return
+ex:refundOfReturn a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Refund ;
+    rdfs:range ex:Return ;
+    rdfs:label "refundOfReturn"@zh ;
+    ex:domainAttribute ex:RefundID ;
+    ex:rangeAttribute ex:ReturnID .
+
+# Return -> Refund
+ex:hasRefund a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Return ;
+    rdfs:range ex:Refund ;
+    rdfs:label "hasRefund"@zh ;
+    ex:domainAttribute ex:ReturnID ;
+    ex:rangeAttribute ex:RefundID .
+
+# Review -> Product
+ex:reviewsProduct a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Review ;
+    rdfs:range ex:Product ;
+    rdfs:label "reviewsProduct"@zh ;
+    ex:domainAttribute ex:ReviewID ;
+    ex:rangeAttribute ex:ProductID .
+
+# Product -> Review
+ex:productReviewedBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Product ;
+    rdfs:range ex:Review ;
+    rdfs:label "productReviewedBy"@zh ;
+    ex:domainAttribute ex:ProductID ;
+    ex:rangeAttribute ex:ReviewID .
+
+# SupportTicket -> Order
+ex:ticketForOrder a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:SupportTicket ;
+    rdfs:range ex:Order ;
+    rdfs:label "ticketForOrder"@zh ;
+    ex:domainAttribute ex:SupportTicketID ;
+    ex:rangeAttribute ex:OrderID .
+
+# Order -> SupportTicket
+ex:orderHasTicket a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Order ;
+    rdfs:range ex:SupportTicket ;
+    rdfs:label "orderHasTicket"@zh ;
+    ex:domainAttribute ex:OrderID ;
+    ex:rangeAttribute ex:SupportTicketID .
+
+# Promotion -> Product
+ex:promotionOn a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Promotion ;
+    rdfs:range ex:Product ;
+    rdfs:label "promotionOn"@zh ;
+    ex:domainAttribute ex:PromotionID ;
+    ex:rangeAttribute ex:ProductID .
+
+# Product -> Promotion
+ex:hasPromotion a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Product ;
+    rdfs:range ex:Promotion ;
+    rdfs:label "hasPromotion"@zh ;
+    ex:domainAttribute ex:ProductID ;
+    ex:rangeAttribute ex:PromotionID .
+
+# Coupon -> Order
+ex:appliedToOrder a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Coupon ;
+    rdfs:range ex:Order ;
+    rdfs:label "appliedToOrder"@zh ;
+    ex:domainAttribute ex:CouponID ;
+    ex:rangeAttribute ex:OrderID .
+
+# Order -> Coupon
+ex:orderHasCoupon a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Order ;
+    rdfs:range ex:Coupon ;
+    rdfs:label "orderHasCoupon"@zh ;
+    ex:domainAttribute ex:OrderID ;
+    ex:rangeAttribute ex:CouponID .
+
+# Incident -> Shipment
+ex:incidentOnShipment a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Incident ;
+    rdfs:range ex:Shipment ;
+    rdfs:label "incidentOnShipment"@zh ;
+    ex:domainAttribute ex:IncidentID ;
+    ex:rangeAttribute ex:ShipmentID .
+
+# Shipment -> Incident
+ex:shipmentHasIncident a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Shipment ;
+    rdfs:range ex:Incident ;
+    rdfs:label "shipmentHasIncident"@zh ;
+    ex:domainAttribute ex:ShipmentID ;
+    ex:rangeAttribute ex:IncidentID .
+
+# Forecast -> Product
+ex:forecastForProduct a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Forecast ;
+    rdfs:range ex:Product ;
+    rdfs:label "forecastForProduct"@zh ;
+    ex:domainAttribute ex:ForecastID ;
+    ex:rangeAttribute ex:ProductID .
+
+# Product -> Forecast
+ex:productHasForecast a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:custom_relation ;
+    rdfs:domain ex:Product ;
+    rdfs:range ex:Forecast ;
+    rdfs:label "productHasForecast"@zh ;
+    ex:domainAttribute ex:ProductID ;
+    ex:rangeAttribute ex:ForecastID .
