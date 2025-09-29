@@ -1,0 +1,900 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex: <http://asiainfo.com/example-owl#> .
+
+##################################
+# 基础抽象类与通用语义（禁止变动）
+##################################
+ex:Entity a owl:Class ; rdfs:subClassOf prov:Entity ; rdfs:label "实体"@zh .
+ex:Object a owl:Class ; rdfs:subClassOf ex:Entity ; rdfs:label "本体对象"@zh .
+ex:Action a owl:Class ; rdfs:subClassOf prov:Activity ; rdfs:label "行动"@zh .
+ex:Function a owl:Class ; rdfs:subClassOf prov:Activity ; rdfs:label "决策/逻辑函数"@zh .
+ex:isPrimaryKey a owl:AnnotationProperty ; rdfs:label "是否主键"@zh .
+ex:bindAction a owl:ObjectProperty ; rdfs:label "本体对象关联行动"@zh ; rdfs:domain ex:Object ; rdfs:range ex:Action .
+ex:bindFunction a owl:ObjectProperty ; rdfs:label "本体对象关联函数"@zh ; rdfs:domain ex:Object ; rdfs:range ex:Function .
+ex:custom_relation a owl:ObjectProperty ; rdfs:label "自定义对象与对象之间的关系"@zh .
+ex:Parameter a owl:Class ; rdfs:label "函数参数"@zh .
+ex:hasParameter a owl:ObjectProperty ; rdfs:label "有参数"@zh ; rdfs:domain ex:Function ; rdfs:range ex:Parameter .
+ex:paramName a owl:DatatypeProperty ; rdfs:label "参数名"@zh ; rdfs:domain ex:Parameter ; rdfs:range xsd:string .
+ex:paramType a owl:DatatypeProperty ; rdfs:label "参数类型"@zh ; rdfs:domain ex:Parameter ; rdfs:range xsd:string .
+ex:isOptional a owl:DatatypeProperty ; rdfs:label "是否可选"@zh ; rdfs:domain ex:Parameter ; rdfs:range xsd:boolean .
+ex:defaultValue a owl:DatatypeProperty ; rdfs:label "默认值"@zh ; rdfs:domain ex:Parameter ; rdfs:range xsd:string .
+
+##################################
+# 对象定义(必须继承ex:Object)
+##################################
+ex:Behavior a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "行为"@zh ;
+  rdfs:comment ""@zh .
+
+ex:metric a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "指标"@zh ;
+  rdfs:comment ""@zh .
+
+ex:Product a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "产品"@zh ;
+  rdfs:comment ""@zh .
+
+ex:tag a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "标签"@zh ;
+  rdfs:comment ""@zh .
+
+ex:user a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "用户"@zh ;
+  rdfs:comment ""@zh .
+
+##################################
+# 数据属性定义
+# 每个对象的属性里，只能拥有一个primarykey
+##################################
+ex:渠道ID a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "渠道ID"@zh ;
+  ex:isPrimaryKey false .
+
+ex:联系时间 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "联系时间"@zh ;
+  ex:isPrimaryKey false .
+
+ex:是否主动 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "是否主动"@zh ;
+  ex:isPrimaryKey false .
+
+ex:是否订单 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:int ;
+  rdfs:label "是否订单"@zh ;
+  ex:isPrimaryKey false .
+
+ex:是否接收 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "是否接收"@zh ;
+  ex:isPrimaryKey false .
+
+ex:是否策略 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:int ;
+  rdfs:label "是否策略"@zh ;
+  ex:isPrimaryKey false .
+
+ex:是否成功 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "是否成功"@zh ;
+  ex:isPrimaryKey false .
+
+ex:推荐原因 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "推荐原因"@zh ;
+  ex:isPrimaryKey false .
+
+ex:策略ID a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "策略ID"@zh ;
+  ex:isPrimaryKey false .
+
+ex:成功时间 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "成功时间"@zh ;
+  ex:isPrimaryKey false .
+
+ex:日期 a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:metric ex:Behavior ex:Product ex:tag ) ] ;
+  rdfs:range xsd:int ;
+  rdfs:label "日期"@zh ;
+  ex:isPrimaryKey false .
+
+ex:ID a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:metric ex:tag ) ] ;
+  rdfs:range xsd:int ;
+  rdfs:label "ID"@zh ;
+  ex:isPrimaryKey true .
+
+ex:指标粒度 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:string ;
+  rdfs:label "指标粒度"@zh ;
+  ex:isPrimaryKey false .
+
+ex:套餐ID a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:string ;
+  rdfs:label "套餐ID"@zh ;
+  ex:isPrimaryKey false .
+
+ex:计划ID a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "计划ID"@zh ;
+  ex:isPrimaryKey false .
+
+ex:方案ID a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "方案ID"@zh ;
+  ex:isPrimaryKey true .
+
+ex:30天购买数 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "30天购买数"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30天联系数 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "30天联系数"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30日转化率 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "30日转化率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30天转化率 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "30天转化率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30天人群 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "30天人群"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30天人群特征 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "30天人群特征"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30天人群性别 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "30天人群性别"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30天发送数 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "30天发送数"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30日总收入 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "30日总收入"@zh ;
+  ex:isPrimaryKey false .
+
+ex:30天总收入 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "30天总收入"@zh ;
+  ex:isPrimaryKey false .
+
+ex:7天购买数 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "7天购买数"@zh ;
+  ex:isPrimaryKey false .
+
+ex:7天联系数 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "7天联系数"@zh ;
+  ex:isPrimaryKey false .
+
+ex:7日转化率 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "7日转化率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:7天转化率 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "7天转化率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:7天发送数 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "7天发送数"@zh ;
+  ex:isPrimaryKey false .
+
+ex:7日总收入 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "7日总收入"@zh ;
+  ex:isPrimaryKey false .
+
+ex:7天总收入 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "7天总收入"@zh ;
+  ex:isPrimaryKey false .
+
+ex:激活规则 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "激活规则"@zh ;
+  ex:isPrimaryKey false .
+
+ex:ADSL a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "ADSL"@zh ;
+  ex:isPrimaryKey false .
+
+ex:可用时长 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "可用时长"@zh ;
+  ex:isPrimaryKey false .
+
+ex:奖励名称 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "奖励名称"@zh ;
+  ex:isPrimaryKey false .
+
+ex:奖励类型 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "奖励类型"@zh ;
+  ex:isPrimaryKey false .
+
+ex:奖励有效期类型 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "奖励有效期类型"@zh ;
+  ex:isPrimaryKey false .
+
+ex:品牌 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "品牌"@zh ;
+  ex:isPrimaryKey false .
+
+ex:业务类型 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "业务类型"@zh ;
+  ex:isPrimaryKey false .
+
+ex:中国语音 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "中国语音"@zh ;
+  ex:isPrimaryKey false .
+
+ex:承诺金额 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "承诺金额"@zh ;
+  ex:isPrimaryKey false .
+
+ex:承诺等级 a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:metric ex:Product ) ] ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "承诺等级"@zh ;
+  ex:isPrimaryKey false .
+
+ex:通用流量 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "通用流量"@zh ;
+  ex:isPrimaryKey false .
+
+ex:停用规则 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "停用规则"@zh ;
+  ex:isPrimaryKey false .
+
+ex:折扣类型 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "折扣类型"@zh ;
+  ex:isPrimaryKey false .
+
+ex:违约金 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "违约金"@zh ;
+  ex:isPrimaryKey false .
+
+ex:一级分类 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "一级分类"@zh ;
+  ex:isPrimaryKey false .
+
+ex:国际语音 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:int ;
+  rdfs:label "国际语音"@zh ;
+  ex:isPrimaryKey false .
+
+ex:增长率 a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:metric ex:Product ) ] ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "增长率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:可兑换 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "可兑换"@zh ;
+  ex:isPrimaryKey false .
+
+ex:老人专属 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "老人专属"@zh ;
+  ex:isPrimaryKey false .
+
+ex:学生专属 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "学生专属"@zh ;
+  ex:isPrimaryKey false .
+
+ex:优惠价 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "优惠价"@zh ;
+  ex:isPrimaryKey false .
+
+ex:本地地址 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "本地地址"@zh ;
+  ex:isPrimaryKey false .
+
+ex:会员等级 a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:Product ex:tag ) ] ;
+  rdfs:range xsd:string ;
+  rdfs:label "会员等级"@zh ;
+  ex:isPrimaryKey false .
+
+ex:方案描述 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "方案描述"@zh ;
+  ex:isPrimaryKey false .
+
+ex:方案名称 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "方案名称"@zh ;
+  ex:isPrimaryKey false .
+
+ex:方案原价 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "方案原价"@zh ;
+  ex:isPrimaryKey false .
+
+ex:方案价格 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "方案价格"@zh ;
+  ex:isPrimaryKey false .
+
+ex:方案均价 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "方案均价"@zh ;
+  ex:isPrimaryKey false .
+
+ex:方案初始价 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "方案初始价"@zh ;
+  ex:isPrimaryKey false .
+
+ex:方案类型 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "方案类型"@zh ;
+  ex:isPrimaryKey false .
+
+ex:区域限制 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "区域限制"@zh ;
+  ex:isPrimaryKey false .
+
+ex:专用流量 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "专用流量"@zh ;
+  ex:isPrimaryKey false .
+
+ex:可叠加 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "可叠加"@zh ;
+  ex:isPrimaryKey false .
+
+ex:标签 a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "标签"@zh ;
+  ex:isPrimaryKey false .
+
+ex:序列号 a owl:DatatypeProperty ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range xsd:string ;
+  rdfs:label "序列号"@zh ;
+  ex:isPrimaryKey false .
+
+ex:更新时间 a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:metric ex:tag ) ] ;
+  rdfs:range xsd:date ;
+  rdfs:label "更新时间"@zh ;
+  ex:isPrimaryKey false .
+
+ex:客户ID a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "客户ID"@zh ;
+  ex:isPrimaryKey true .
+
+ex:用户ID a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:metric ex:Behavior ex:tag ) ] ;
+  rdfs:range xsd:string ;
+  rdfs:label "用户ID"@zh ;
+  ex:isPrimaryKey true .
+
+ex:是否5G主套餐 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "是否5G主套餐"@zh ;
+  ex:isPrimaryKey false .
+
+ex:5G主卡 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "5G主卡"@zh ;
+  ex:isPrimaryKey false .
+
+ex:账户余额 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "账户余额"@zh ;
+  ex:isPrimaryKey false .
+
+ex:年龄 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:int ;
+  rdfs:label "年龄"@zh ;
+  ex:isPrimaryKey false .
+
+ex:ARPU a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "ARPU"@zh ;
+  ex:isPrimaryKey false .
+
+ex:用户ARPU a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "用户ARPU"@zh ;
+  ex:isPrimaryKey false .
+
+ex:最近3月ARPU均值 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "最近3月ARPU均值"@zh ;
+  ex:isPrimaryKey false .
+
+ex:近三期ARPU均值 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "近三期ARPU均值"@zh ;
+  ex:isPrimaryKey false .
+
+ex:ARPU折扣率 a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:user ex:metric ) ] ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "ARPU折扣率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:上期ARPU a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:user ex:metric ) ] ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "上期ARPU"@zh ;
+  ex:isPrimaryKey false .
+
+ex:上两期ARPU a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "上两期ARPU"@zh ;
+  ex:isPrimaryKey false .
+
+ex:上上期ARPU a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "上上期ARPU"@zh ;
+  ex:isPrimaryKey false .
+
+ex:ARPU(会员) a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "ARPU(会员)"@zh ;
+  ex:isPrimaryKey false .
+
+ex:会员ARPU a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "会员ARPU"@zh ;
+  ex:isPrimaryKey false .
+
+ex:换机概率 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "换机概率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:换号概率 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "换号概率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:流量超限 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "流量超限"@zh ;
+  ex:isPrimaryKey false .
+
+ex:DOU(会员) a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "DOU(会员)"@zh ;
+  ex:isPrimaryKey false .
+
+ex:会员DOU a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "会员DOU"@zh ;
+  ex:isPrimaryKey false .
+
+ex:家庭是否融合产品 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "家庭是否融合产品"@zh ;
+  ex:isPrimaryKey false .
+
+ex:家庭最大等级 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "家庭最大等级"@zh ;
+  ex:isPrimaryKey false .
+
+ex:家庭规模 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:int ;
+  rdfs:label "家庭规模"@zh ;
+  ex:isPrimaryKey false .
+
+ex:老年用户 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "老年用户"@zh ;
+  ex:isPrimaryKey false .
+
+ex:学生用户 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "学生用户"@zh ;
+  ex:isPrimaryKey false .
+
+ex:高价值 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "高价值"@zh ;
+  ex:isPrimaryKey false .
+
+ex:低余额 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "低余额"@zh ;
+  ex:isPrimaryKey false .
+
+ex:是否融合套餐 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "是否融合套餐"@zh ;
+  ex:isPrimaryKey false .
+
+ex:合并用户 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "合并用户"@zh ;
+  ex:isPrimaryKey false .
+
+ex:套餐升级意向 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "套餐升级意向"@zh ;
+  ex:isPrimaryKey false .
+
+ex:是否实名 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "是否实名"@zh ;
+  ex:isPrimaryKey false .
+
+ex:近期出行 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "近期出行"@zh ;
+  ex:isPrimaryKey false .
+
+ex:学生卡标识(原始) a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "学生卡标识(原始)"@zh ;
+  ex:isPrimaryKey false .
+
+ex:是否无限流量 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "是否无限流量"@zh ;
+  ex:isPrimaryKey false .
+
+ex:无限流量 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "无限流量"@zh ;
+  ex:isPrimaryKey false .
+
+ex:入网月 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:int ;
+  rdfs:label "入网月"@zh ;
+  ex:isPrimaryKey false .
+
+ex:离网预警概率 a owl:DatatypeProperty ;
+  rdfs:domain [ owl:unionOf ( ex:user ex:metric ) ] ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "离网预警概率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:主套餐ID a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "主套餐ID"@zh ;
+  ex:isPrimaryKey false .
+
+ex:营销触达率 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "营销触达率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:MOU(会员) a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "MOU(会员)"@zh ;
+  ex:isPrimaryKey false .
+
+ex:会员MOU a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "会员MOU"@zh ;
+  ex:isPrimaryKey false .
+
+ex:套餐升级概率 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "套餐升级概率"@zh ;
+  ex:isPrimaryKey false .
+
+ex:产品费(会员) a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "产品费(会员)"@zh ;
+  ex:isPrimaryKey false .
+
+ex:会员产品费 a owl:DatatypeProperty ;
+  rdfs:domain ex:metric ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "会员产品费"@zh ;
+  ex:isPrimaryKey false .
+
+ex:性别 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:int ;
+  rdfs:label "性别"@zh ;
+  ex:isPrimaryKey false .
+
+ex:星级 a owl:DatatypeProperty ;
+  rdfs:domain ex:user ;
+  rdfs:range xsd:string ;
+  rdfs:label "星级"@zh ;
+  ex:isPrimaryKey false .
+
+ex:语音超限 a owl:DatatypeProperty ;
+  rdfs:domain ex:tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "语音超限"@zh ;
+  ex:isPrimaryKey false .
+
+##################################
+# 关系定义
+# 必须继承ex:custom_relation
+# 有正向关系就需定义一个反向关系
+##################################
+ex:hasUser a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Product ;
+  rdfs:range ex:user ;
+  rdfs:label "使用者"@zh ;
+  rdfs:comment "用途: 产品 - 使用用户. 主体: 产品(方案ID). 客体: 用户(用户ID). 来源: 产品订购/实例数据. 刷新频率: DAILY."@zh ;
+  owl:inverseOf ex:ownsProduct .
+
+ex:ownsProduct a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:user ;
+  rdfs:range ex:Product ;
+  rdfs:label "拥有"@zh ;
+  rdfs:comment "用途: 用户 - 所拥有/已订购产品. 主体: 用户(用户ID). 客体: 产品(方案ID). 来源: 订购/权益实例表. 刷新频率: DAILY."@zh ;
+  owl:inverseOf ex:hasUser .
+
+
+ex:hasBehavior a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:user ;
+  rdfs:range ex:Behavior ;
+  rdfs:label "拥有行为"@zh ;
+  rdfs:comment "用户产生的具体行为事件"@zh ;
+  owl:inverseOf ex:behaviorUser .
+
+ex:behaviorUser a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range ex:user ;
+  rdfs:label "行为用户"@zh ;
+  rdfs:comment "行为事件对应的用户"@zh ;
+  owl:inverseOf ex:hasBehavior .
+
+ex:behaviorProduct a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Behavior ;
+  rdfs:range ex:Product ;
+  rdfs:label "涉及产品"@zh ;
+  rdfs:comment "行为关联到的产品(办理/推荐/触达对象)"@zh ;
+  owl:inverseOf ex:productBehavior .
+
+ex:productBehavior a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Product ;
+  rdfs:range ex:Behavior ;
+  rdfs:label "被行为涉及"@zh ;
+  rdfs:comment "某产品被哪些行为事件引用"@zh ;
+  owl:inverseOf ex:behaviorProduct .
+
+ex:hasTag a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:user ;
+  rdfs:range ex:tag ;
+  rdfs:label "拥有标签"@zh ;
+  rdfs:comment "用户当前具备的离散标签(画像/状态)"@zh ;
+  owl:inverseOf ex:tagOfUser .
+
+ex:tagOfUser a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:tag ;
+  rdfs:range ex:user ;
+  rdfs:label "标签所属用户"@zh ;
+  rdfs:comment "该标签被哪些用户拥有"@zh ;
+  owl:inverseOf ex:hasTag .
+
+ex:hasMetric a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:user ;
+  rdfs:range ex:metric ;
+  rdfs:label "拥有指标"@zh ;
+  rdfs:comment "用户粒度指标(宽表 u_* 列映射)"@zh ;
+  owl:inverseOf ex:metricOfUser .
+
+ex:metricOfUser a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:metric ;
+  rdfs:range ex:user ;
+  rdfs:label "指标所属用户"@zh ;
+  rdfs:comment "该指标的用户主体"@zh ;
+  owl:inverseOf ex:hasMetric .
+
+ex:productMetric a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Product ;
+  rdfs:range ex:metric ;
+  rdfs:label "产品指标"@zh ;
+  rdfs:comment "产品粒度指标(宽表 p_* 列映射)"@zh ;
+  owl:inverseOf ex:metricOfProduct .
+
+ex:metricOfProduct a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:metric ;
+  rdfs:range ex:Product ;
+  rdfs:label "指标所属产品"@zh ;
+  rdfs:comment "该指标归属的产品对象"@zh ;
+  owl:inverseOf ex:productMetric .
+
+ex:tagDerivedFromMetric a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:tag ;
+  rdfs:range ex:metric ;
+  rdfs:label "标签来源指标"@zh ;
+  rdfs:comment "标签由某指标/模型结果阈值派生 (如 套餐升级意向 - 套餐升级概率)"@zh ;
+  owl:inverseOf ex:metricDerivesTag .
+
+ex:metricDerivesTag a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:metric ;
+  rdfs:range ex:tag ;
+  rdfs:label "指标派生标签"@zh ;
+  rdfs:comment "指标或模型输出派生的离散标签集合"@zh ;
+  owl:inverseOf ex:tagDerivedFromMetric .
+
+
+ex:tagMapsProduct a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:tag ;
+  rdfs:range ex:Product ;
+  rdfs:label "标签映射产品"@zh ;
+  rdfs:comment "标签值（如 学生用户/老年用户）来源于主套餐对应的产品属性"@zh ;
+  owl:inverseOf ex:productMappedByTag .
+
+ex:productMappedByTag a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Product ;
+  rdfs:range ex:tag ;
+  rdfs:label "产品派生标签"@zh ;
+  rdfs:comment "该产品特征被用来派生哪些用户标签"@zh ;
+  owl:inverseOf ex:tagMapsProduct .
