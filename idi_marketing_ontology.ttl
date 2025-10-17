@@ -1,0 +1,987 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex:    <http://asiainfo.com/example-owl#> .
+
+##################################
+# 基础抽象类与通用语义（禁止变动）
+##################################
+
+ex:Entity a owl:Class ;
+  rdfs:subClassOf prov:Entity ;
+  rdfs:label "实体"@zh .
+
+ex:Object a owl:Class ;
+  rdfs:subClassOf ex:Entity ;
+  rdfs:label "本体对象"@zh .
+
+ex:Action a owl:Class ;
+  rdfs:subClassOf prov:Activity ;
+  rdfs:label "行动"@zh .
+
+ex:Function a owl:Class ;
+  rdfs:subClassOf prov:Activity ;
+  rdfs:label "决策/逻辑函数"@zh .
+
+# 供导入代码识别的注解属性（建议把 isTitle 也声明出来）
+ex:isPrimaryKey a owl:AnnotationProperty ;
+  rdfs:label "是否主键"@zh .
+
+ex:isTitle a owl:AnnotationProperty ;
+  rdfs:label "是否标题"@zh .
+
+# 用于指定对象属性关联时使用的具体字段
+ex:domainAttribute a owl:AnnotationProperty ;
+  rdfs:label "域属性"@zh ;
+  rdfs:comment "指定对象属性的域端使用哪个数据属性建立关联"@zh .
+
+ex:rangeAttribute a owl:AnnotationProperty ;
+  rdfs:label "值域属性"@zh ;
+  rdfs:comment "指定对象属性的值域端使用哪个数据属性建立关联"@zh .
+
+# 绑定关系与自定义关系“基类”
+ex:bindAction a owl:ObjectProperty ;
+  rdfs:label "本体对象关联行动"@zh ;
+  rdfs:domain ex:Object ;
+  rdfs:range ex:Action .
+
+ex:bindFunction a owl:ObjectProperty ;
+  rdfs:label "本体对象关联函数"@zh ;
+  rdfs:domain ex:Object ;
+  rdfs:range ex:Function .
+
+ex:custom_relation a owl:ObjectProperty ;
+  rdfs:label "自定义对象与对象之间的关系"@zh .
+
+
+##################################
+# 对象定义（9类）
+##################################
+
+ex:User a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "用户"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+ex:Product a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "产品"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+ex:BehaviorEvent a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "行为事件"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+ex:Channel a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "渠道"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+ex:Strategy a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "策略"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+ex:TagAssignment a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "标签赋值"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+ex:MetricValue a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "指标取值"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+ex:Metric a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "指标"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+ex:Tag a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "标签"@zh ;
+  rdfs:comment "由脚本从CSV生成的对象定义"@zh .
+
+
+##################################
+# 数据属性定义
+##################################
+
+# User 属性
+ex:user_user_id a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:integer ;
+  rdfs:label "user_id"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:user_serial_num a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:integer ;
+  rdfs:label "serial_num"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+ex:user_u_age a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:integer ;
+  rdfs:label "u_age"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_u_sex a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:integer ;
+  rdfs:label "u_sex"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_u_join_month a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:string ;
+  rdfs:label "u_join_month"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_u_user_star_level a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:string ;
+  rdfs:label "u_user_star_level"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_u_is_real_name a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:integer ;
+  rdfs:label "u_is_real_name"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_u_account_balance a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "u_account_balance"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_u_main_plan_id a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:integer ;
+  rdfs:label "u_main_plan_id"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_u_5G_main a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:string ;
+  rdfs:label "u_5G_main"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_u_is_merge a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:integer ;
+  rdfs:label "u_is_merge"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:user_dt a owl:DatatypeProperty ;
+  rdfs:domain ex:User ;
+  rdfs:range xsd:string ;
+  rdfs:label "dt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+# Product 属性
+ex:product_plan_id a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:integer ;
+  rdfs:label "plan_id"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:product_p_plan_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_plan_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_plan_desc a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_plan_desc"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_plan_name a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_plan_name"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+ex:product_p_tags a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_tags"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_first_category a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_first_category"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_business_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_business_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_local_addr a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_local_addr"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_active_rule a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_active_rule"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_deactive_rule a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_deactive_rule"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_stackable a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_stackable"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_less_price a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_less_price"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_plan_price a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_plan_price"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_plan_original_price a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_plan_original_price"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_awards_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_awards_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_awards_name a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_awards_name"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_avial_duration a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_avial_duration"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_china_yuying a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_china_yuying"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_foreign_yuying a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_foreign_yuying"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_comon_flow a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_comon_flow"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_sp_flow a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_sp_flow"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_discount_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_discount_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_adsls a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_adsls"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_membership_level a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_membership_level"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_is_for_student a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:integer ;
+  rdfs:label "p_is_for_student"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_is_for_elder a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:integer ;
+  rdfs:label "p_is_for_elder"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_is_exchange a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:integer ;
+  rdfs:label "p_is_exchange"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_fine a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_fine"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_commitment_amount a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_commitment_amount"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_brand a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_brand"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_growth_rate a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_growth_rate"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_30d_buyed_cnt a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_30d_buyed_cnt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_30d_send_cnt a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_30d_send_cnt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_30d_contact_cnt a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_30d_contact_cnt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_30d_cvr a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_30d_cvr"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_7d_buyed_cnt a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_7d_buyed_cnt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_7d_send_cnt a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_7d_send_cnt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_7d_contact_cnt a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_7d_contact_cnt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_7d_cvr a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_7d_cvr"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_30d_sum_income a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_30d_sum_income"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_7d_sum_income a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_7d_sum_income"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_30d_people_features a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_30d_people_features"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_30d_people a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_30d_people"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_30d_people_gender a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_30d_people_gender"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_plan_price_init a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_plan_price_init"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_plan_price_avg a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "p_plan_price_avg"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_commit_level a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_commit_level"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_awards_valid_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_awards_valid_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_p_regional_restriction a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "p_regional_restriction"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:product_dt a owl:DatatypeProperty ;
+  rdfs:domain ex:Product ;
+  rdfs:range xsd:string ;
+  rdfs:label "dt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+# BehaviorEvent 属性
+ex:behavior_user_id a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "user_id"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_serial_num a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "serial_num"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:behavior_plan_id a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "plan_id"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_channel_id a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "channel_id"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_c_contact_at a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:string ;
+  rdfs:label "c_contact_at"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+ex:behavior_c_is_receive a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "c_is_receive"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_c_is_success a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "c_is_success"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_c_success_at a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:string ;
+  rdfs:label "c_success_at"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_c_is_initiative a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "c_is_initiative"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_c_is_order a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "c_is_order"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_c_is_strategy a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "c_is_strategy"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_c_strategy_id a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:integer ;
+  rdfs:label "c_strategy_id"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_c_rec_reason a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:string ;
+  rdfs:label "c_rec_reason"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:behavior_dt a owl:DatatypeProperty ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range xsd:string ;
+  rdfs:label "dt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+# Channel 属性
+ex:channel_channel_id a owl:DatatypeProperty ;
+  rdfs:domain ex:Channel ;
+  rdfs:range xsd:integer ;
+  rdfs:label "channel_id"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle true .
+
+# Strategy 属性
+ex:strategy_strategy_id a owl:DatatypeProperty ;
+  rdfs:domain ex:Strategy ;
+  rdfs:range xsd:integer ;
+  rdfs:label "strategy_id"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle true .
+
+# TagAssignment 属性
+ex:tag_entity_type a owl:DatatypeProperty ;
+  rdfs:domain ex:TagAssignment ;
+  rdfs:range xsd:string ;
+  rdfs:label "entity_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:tag_entity_id a owl:DatatypeProperty ;
+  rdfs:domain ex:TagAssignment ;
+  rdfs:range xsd:integer ;
+  rdfs:label "entity_id"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:tag_tag_code a owl:DatatypeProperty ;
+  rdfs:domain ex:TagAssignment ;
+  rdfs:range xsd:string ;
+  rdfs:label "tag_code"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+ex:tag_tag_value a owl:DatatypeProperty ;
+  rdfs:domain ex:TagAssignment ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "tag_value"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:tag_dt a owl:DatatypeProperty ;
+  rdfs:domain ex:TagAssignment ;
+  rdfs:range xsd:string ;
+  rdfs:label "dt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+# MetricValue 属性
+ex:metric_entity_type a owl:DatatypeProperty ;
+  rdfs:domain ex:MetricValue ;
+  rdfs:range xsd:string ;
+  rdfs:label "entity_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:metric_entity_id a owl:DatatypeProperty ;
+  rdfs:domain ex:MetricValue ;
+  rdfs:range xsd:integer ;
+  rdfs:label "entity_id"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle false .
+
+ex:metric_metric_code a owl:DatatypeProperty ;
+  rdfs:domain ex:MetricValue ;
+  rdfs:range xsd:string ;
+  rdfs:label "metric_code"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle true .
+
+ex:metric_metric_value a owl:DatatypeProperty ;
+  rdfs:domain ex:MetricValue ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "metric_value"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:metric_dt a owl:DatatypeProperty ;
+  rdfs:domain ex:MetricValue ;
+  rdfs:range xsd:string ;
+  rdfs:label "dt"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+# Metric 属性
+ex:metric_dict_metric_code a owl:DatatypeProperty ;
+  rdfs:domain ex:Metric ;
+  rdfs:range xsd:string ;
+  rdfs:label "metric_code"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle true .
+
+ex:metric_dict_entity_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Metric ;
+  rdfs:range xsd:string ;
+  rdfs:label "entity_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:metric_dict_source_table a owl:DatatypeProperty ;
+  rdfs:domain ex:Metric ;
+  rdfs:range xsd:string ;
+  rdfs:label "source_table"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:metric_dict_value_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Metric ;
+  rdfs:range xsd:string ;
+  rdfs:label "value_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+# Tag 属性
+ex:tag_dict_tag_code a owl:DatatypeProperty ;
+  rdfs:domain ex:Tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "tag_code"@zh ;
+  ex:isPrimaryKey true ;
+  ex:isTitle true .
+
+ex:tag_dict_entity_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "entity_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:tag_dict_source_table a owl:DatatypeProperty ;
+  rdfs:domain ex:Tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "source_table"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+ex:tag_dict_value_type a owl:DatatypeProperty ;
+  rdfs:domain ex:Tag ;
+  rdfs:range xsd:string ;
+  rdfs:label "value_type"@zh ;
+  ex:isPrimaryKey false ;
+  ex:isTitle false .
+
+
+##################################
+# 关系定义（对象属性；正反向）
+##################################
+
+ex:hasBehavior a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:User ;
+  rdfs:range  ex:BehaviorEvent ;
+  rdfs:label "拥有行为"@zh ;
+  ex:domainAttribute ex:user_user_id ;
+  ex:rangeAttribute ex:behavior_user_id .
+
+ex:behaviorOf a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range  ex:User ;
+  rdfs:label "属于用户"@zh ;
+  owl:inverseOf ex:hasBehavior ;
+  ex:domainAttribute ex:behavior_user_id ;
+  ex:rangeAttribute ex:user_user_id .
+
+ex:involvesProduct a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range  ex:Product ;
+  rdfs:label "涉及产品"@zh ;
+  ex:domainAttribute ex:behavior_plan_id ;
+  ex:rangeAttribute ex:product_plan_id .
+
+ex:productInvolvedIn a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Product ;
+  rdfs:range  ex:BehaviorEvent ;
+  rdfs:label "被涉及"@zh ;
+  owl:inverseOf ex:involvesProduct ;
+  ex:domainAttribute ex:product_plan_id ;
+  ex:rangeAttribute ex:behavior_plan_id .
+
+ex:viaChannel a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range  ex:Channel ;
+  rdfs:label "通过渠道"@zh ;
+  ex:domainAttribute ex:behavior_channel_id ;
+  ex:rangeAttribute ex:channel_channel_id .
+
+ex:channelUsedBy a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Channel ;
+  rdfs:range  ex:BehaviorEvent ;
+  rdfs:label "被使用"@zh ;
+  owl:inverseOf ex:viaChannel ;
+  ex:domainAttribute ex:channel_channel_id ;
+  ex:rangeAttribute ex:behavior_channel_id .
+
+ex:belongsToStrategy a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:BehaviorEvent ;
+  rdfs:range  ex:Strategy ;
+  rdfs:label "属于策略"@zh ;
+  ex:domainAttribute ex:behavior_c_strategy_id ;
+  ex:rangeAttribute ex:strategy_strategy_id .
+
+ex:strategyHasBehavior a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Strategy ;
+  rdfs:range  ex:BehaviorEvent ;
+  rdfs:label "包含行为"@zh ;
+  owl:inverseOf ex:belongsToStrategy ;
+  ex:domainAttribute ex:strategy_strategy_id ;
+  ex:rangeAttribute ex:behavior_c_strategy_id .
+
+ex:hasMainPlan a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:User ;
+  rdfs:range  ex:Product ;
+  rdfs:label "拥有主套餐"@zh ;
+  ex:domainAttribute ex:user_u_main_plan_id ;
+  ex:rangeAttribute ex:product_plan_id .
+
+ex:isMainPlanOf a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Product ;
+  rdfs:range  ex:User ;
+  rdfs:label "是主套餐"@zh ;
+  owl:inverseOf ex:hasMainPlan ;
+  ex:domainAttribute ex:product_plan_id ;
+  ex:rangeAttribute ex:user_u_main_plan_id .
+
+ex:ofTag a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:TagAssignment ;
+  rdfs:range  ex:Tag ;
+  rdfs:label "关联标签"@zh ;
+  ex:domainAttribute ex:tag_tag_code ;
+  ex:rangeAttribute ex:tag_dict_tag_code .
+
+ex:tagHasAssignment a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Tag ;
+  rdfs:range  ex:TagAssignment ;
+  rdfs:label "被赋值"@zh ;
+  owl:inverseOf ex:ofTag ;
+  ex:domainAttribute ex:tag_dict_tag_code ;
+  ex:rangeAttribute ex:tag_tag_code .
+
+ex:ofMetric a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:MetricValue ;
+  rdfs:range  ex:Metric ;
+  rdfs:label "关联指标"@zh ;
+  ex:domainAttribute ex:metric_metric_code ;
+  ex:rangeAttribute ex:metric_dict_metric_code .
+
+ex:metricHasValue a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Metric ;
+  rdfs:range  ex:MetricValue ;
+  rdfs:label "被取值"@zh ;
+  owl:inverseOf ex:ofMetric ;
+  ex:domainAttribute ex:metric_dict_metric_code ;
+  ex:rangeAttribute ex:metric_metric_code .
+
+ex:tagAssignmentOfUser a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:TagAssignment ;
+  rdfs:range  ex:User ;
+  rdfs:label "属于用户"@zh ;
+  ex:domainAttribute ex:tag_entity_id ;
+  ex:rangeAttribute ex:user_user_id .
+
+ex:userHasTagAssignment a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:User ;
+  rdfs:range  ex:TagAssignment ;
+  rdfs:label "拥有标签赋值"@zh ;
+  owl:inverseOf ex:tagAssignmentOfUser ;
+  ex:domainAttribute ex:user_user_id ;
+  ex:rangeAttribute ex:tag_entity_id .
+
+ex:tagAssignmentOfProduct a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:TagAssignment ;
+  rdfs:range  ex:Product ;
+  rdfs:label "属于产品"@zh ;
+  ex:domainAttribute ex:tag_entity_id ;
+  ex:rangeAttribute ex:product_plan_id .
+
+ex:productHasTagAssignment a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Product ;
+  rdfs:range  ex:TagAssignment ;
+  rdfs:label "拥有标签赋值"@zh ;
+  owl:inverseOf ex:tagAssignmentOfProduct ;
+  ex:domainAttribute ex:product_plan_id ;
+  ex:rangeAttribute ex:tag_entity_id .
+
+ex:metricValueOfUser a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:MetricValue ;
+  rdfs:range  ex:User ;
+  rdfs:label "属于用户"@zh ;
+  ex:domainAttribute ex:metric_entity_id ;
+  ex:rangeAttribute ex:user_user_id .
+
+ex:userHasMetricValue a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:User ;
+  rdfs:range  ex:MetricValue ;
+  rdfs:label "拥有指标取值"@zh ;
+  owl:inverseOf ex:metricValueOfUser ;
+  ex:domainAttribute ex:user_user_id ;
+  ex:rangeAttribute ex:metric_entity_id .
+
+ex:metricValueOfProduct a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:MetricValue ;
+  rdfs:range  ex:Product ;
+  rdfs:label "属于产品"@zh ;
+  ex:domainAttribute ex:metric_entity_id ;
+  ex:rangeAttribute ex:product_plan_id .
+
+ex:productHasMetricValue a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:Product ;
+  rdfs:range  ex:MetricValue ;
+  rdfs:label "拥有指标取值"@zh ;
+  owl:inverseOf ex:metricValueOfProduct ;
+  ex:domainAttribute ex:product_plan_id ;
+  ex:rangeAttribute ex:metric_entity_id .
+
+
