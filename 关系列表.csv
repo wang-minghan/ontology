@@ -40,4 +40,4 @@
 状态,StatusOf,拥有状态,HasStatus,工作流状态,WorkflowState,不合格品记录,NCR
 参数,ParamOf,归属,Owner,遥测参数,TelemetryParam,单机组件,Component
 阈值,ThresholdOf,应用,AppliesTo,指标阈值,Threshold,遥测参数,TelemetryParam
-FTA关联,FTALink,逻辑源,LogicSource,故障树节点,FTANode,NCR,
+FTA关联,FTALink,逻辑源,LogicSource,故障树节点,FTANode,不合格品记录,NCR
