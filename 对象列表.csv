@@ -1,4 +1,4 @@
-﻿本体对象中文名称,本体对象英文名称,属性1中文名称,属性1英文名称,属性2中文名称,属性2英文名称,属性3中文名称,属性3英文名称,属性4中文名称,属性4英文名称,属性5中文名称,属性5英文名称
+﻿本体对象中文名称,本体对象英文名称,属性1中文名称,属性1英文名称,属性2中文名称,属性2英文名称,属性3中文名称,属性3英文名称,属性4中文名称,属性4英文名称,属性5中文名称,属性5英文名称,属性6中文名称,属性6英文名称
 产品结构域,DomainProduct,领域负责人,owner,产品线,prod_line,对象数量,obj_count,版本,version,状态,status
 质量管理域,DomainQuality,质量目标,qual_goal,体系版本,sys_ver,合规率,compliance_rate,审计周期,audit_cycle,责任人,owner
 任务流转域,DomainTask,计划完成率,comp_rate,当前里程碑,milestone,任务总数,task_total,延迟数,delay_count,优先级,priority

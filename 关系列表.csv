@@ -50,8 +50,7 @@
 状态,StatusOf,拥有状态,HasStatus,工作流状态,WorkflowState,不合格品记录,NCR
 参数,ParamOf,归属,Owner,遥测参数,TelemetryParam,单机组件,Component
 阈值,ThresholdOf,应用,AppliesTo,指标阈值,Threshold,遥测参数,TelemetryParam
-FTA关联,FTALink,逻辑源,LogicSource,故障树节点,FTANode,NCR,
-引用,References,被引用,CitedBy,TestOutline,TestTask,
-关联风险,RiskLink,风险源,SourceOfRisk,RiskItem,NCR,
-归档,Archives,被归档,ArchivedIn,ProcessNode,Batch,
-,
+FTA关联,FTALink,逻辑源,LogicSource,故障树节点,FTANode,不合格品记录,NCR
+引用,References,被引用,CitedBy,试验大纲,TestOutline,测试任务,TestTask
+关联风险,RiskLink,风险源,SourceOfRisk,风险项,RiskItem,不合格品记录,NCR
+归档,Archives,被归档,ArchivedIn,工艺节点,ProcessNode,批次,Batch
