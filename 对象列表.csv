@@ -3,7 +3,7 @@
 监控预警系统,MonitoringSystem,系统唯一标识,system_id,当前预警等级,alert_level,系统是否激活,is_active,最后检查时间,last_check_time,,,,,,,,,,,,,,
 资源管理系统,ResourceManagement,系统唯一标识,system_id,可用人员总数,total_staff_available,可用车辆总数,total_vehicles_available,资源利用率,resource_utilization,进行中任务数,active_tasks_count,资源评估名称,assessment_name,资源评估时间,assessment_time,,,,,,,,
 基础设施系统,InfrastructureStatus,系统唯一标识,system_id,整体状态,overall_status,关键故障列表,critical_failures,可用性评分,availability_score,最后评估时间,last_assessment_time,,,,,,,,,,,,
-应对方案目录,ResponsePlanCatalog,目录唯一标识,catalog_id,目录名称,catalog_name,灾害类别,disaster_category,最佳预案ID,optimal_plan_id,已评估策略数,strategies_evaluated,方案置信度,confidence_level,预期ROI,expected_roi,方案状态,plan_status,,,,,,
+应对策略目录,ResponsePlanCatalog,目录唯一标识,catalog_id,目录名称,catalog_name,灾害类别,disaster_category,最佳预案ID,optimal_plan_id,已评估策略数,strategies_evaluated,方案置信度,confidence_level,预期ROI,expected_roi,方案状态,plan_status,,,,,,
 监控数据源,MonitoringSource,数据源唯一标识,source_id,数据源类型,source_type,监测位置,location,数据更新频率,data_frequency,当前监测值,current_value,数值单位,unit,运行状态,status,最后更新时间,last_update_time,,,,,,
 预警规则,AlertRule,规则唯一标识,rule_id,规则名称,rule_name,触发条件,condition,预警等级,alert_level,响应时限,response_time_minutes,通知渠道,notification_channels,,,,,,,,,,
 通知记录,Notification,通知唯一标识,notification_id,预警等级,alert_level,接收人角色,recipient_role,接收人姓名,recipient_name,发送渠道,channel,通知内容,content,发送时间,sent_time,是否确认,acknowledged,,,,,,
