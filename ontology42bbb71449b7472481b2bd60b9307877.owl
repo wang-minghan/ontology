@@ -1,0 +1,562 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex: <http://asiainfo.com/example-owl#> .
+
+##################################
+# 基础抽象类与通用语义（禁止变动）
+##################################
+ex:Entity a owl:Class ; rdfs:subClassOf prov:Entity ; rdfs:label "实体"@zh .
+ex:Object a owl:Class ; rdfs:subClassOf ex:Entity ; rdfs:label "本体对象"@zh .
+ex:Action a owl:Class ; rdfs:subClassOf prov:Activity ; rdfs:label "行动"@zh .
+ex:Logic a owl:Class ; rdfs:subClassOf prov:Activity ; rdfs:label "决策/逻辑函数"@zh .
+ex:hasPrimaryKey a owl:AnnotationProperty ; rdfs:label "主键属性"@zh ; rdfs:comment "在类级别声明该对象的主键数据属性"@zh .
+ex:hasTitle a owl:AnnotationProperty ; rdfs:label "标题属性"@zh ; rdfs:comment "在类级别声明该对象的标题数据属性"@zh .
+ex:bindAction a owl:ObjectProperty ; rdfs:label "本体对象关联行动"@zh ; rdfs:domain ex:Object ; rdfs:range ex:Action .
+ex:bindLogic a owl:ObjectProperty ; rdfs:label "本体对象关联函数"@zh ; rdfs:domain ex:Object ; rdfs:range ex:Logic .
+ex:custom_relation a owl:ObjectProperty ; rdfs:label "自定义对象与对象之间的关系"@zh .
+ex:Parameter a owl:Class ; rdfs:label "函数参数"@zh .
+ex:hasParameter a owl:ObjectProperty ; rdfs:label "有参数"@zh ; rdfs:domain ex:Logic ; rdfs:range ex:Parameter .
+ex:paramName a owl:DatatypeProperty ; rdfs:label "参数名"@zh ; rdfs:domain ex:Parameter ; rdfs:range xsd:string .
+ex:paramType a owl:DatatypeProperty ; rdfs:label "参数类型"@zh ; rdfs:domain ex:Parameter ; rdfs:range xsd:string .
+ex:paramTypeNode a owl:ObjectProperty ; rdfs:label "参数类型节点"@zh ; rdfs:domain ex:Parameter .
+ex:ListType a owl:Class ; rdfs:label "列表类型"@zh .
+ex:DictType a owl:Class ; rdfs:label "字典类型"@zh .
+ex:itemType a owl:DatatypeProperty ; rdfs:label "元素类型"@zh .
+ex:keyType a owl:DatatypeProperty ; rdfs:label "键类型"@zh .
+ex:valueType a owl:DatatypeProperty ; rdfs:label "值类型"@zh .
+ex:isOptional a owl:DatatypeProperty ; rdfs:label "是否可选"@zh ; rdfs:domain ex:Parameter ; rdfs:range xsd:boolean .
+ex:defaultValue a owl:DatatypeProperty ; rdfs:label "默认值"@zh ; rdfs:domain ex:Parameter ; rdfs:range xsd:string .
+ex:ontologyName a owl:Class ; rdfs:label "本体名称"@zh .
+ex:domainAttribute a owl:AnnotationProperty ; rdfs:label "域属性"@zh ; rdfs:comment "指定对象属性的域端使用哪个数据属性建立关联"@zh .
+ex:rangeAttribute a owl:AnnotationProperty ; rdfs:label "值域属性"@zh ; rdfs:comment "指定对象属性的值域端使用哪个数据属性建立关联"@zh .
+ex:relationLabel a owl:AnnotationProperty ; rdfs:label "关系标签"@zh ; rdfs:comment "表示关系的语义标签名称（如hasOrder、isPartOf等），用于标识关系类型"@zh .
+ex:hasMiddleObject a owl:ObjectProperty ; rdfs:label "中间对象"@zh ; rdfs:comment "用来描述多对多关系的情况下，两个对象所使用到的中间对象"@zh .
+##################################
+# 本体名称
+##################################
+ex:ontology_tariff_template a ex:ontologyName ;
+  rdfs:label "销售品资费规则本体"@zh .
+
+##################################
+# 可用函数
+##################################
+ex:create_tariff_template_inst a ex:Logic ;
+  rdfs:label "资费模板实例化预处理"@zh ;
+  rdfs:comment """@function_label: 资费模板实例化预处理
+    资费模板实例化预处理
+
+    
+    职责：用于资费模板实例化预处理
+
+    输入：资费模板实例列表offer_tariff_list(必填), TARIFF_TEMPLATE_ID为模板id, TARIFF_TEMPLATE_NAME为资费标题，根据业务类型+参数实例自动生成,
+    paramValue为模板参数取值,templateParameterId为模板参数id,templateParameterName为模板参数名,templateParameterRelId为外部模板参数id，
+    样例数据和参数说明如下
+        {
+             "offerTariff": [{
+                "TARIFF_TEMPLATE_ID": "35000001",                      
+                "TARIFF_TEMPLATE_NAME": "套餐费199元/月,按日均额收到",   
+                "paramInst": [{
+                    "paramValue": "159",                               
+                    "templateParameterId":"1000010",                  
+                    "templateParameterName":"金额(元)",                
+                    "templateParameterRelId": 35000001006         
+                },
+                {
+                    "paramValue": "1",
+                    "templateParameterId":"1000005",
+                    "templateParameterName":"收费方式",
+                    "templateParameterRelId": 35000001004
+                }]
+            },
+            {
+                "TARIFF_TEMPLATE_ID": "35000006",
+                "TARIFF_TEMPLATE_NAME": "国内流量30G",
+                "paramInst": [{
+                    "paramValue": "199",
+                    "templateParameterId":"1000010",
+                    "templateParameterName":"金额(元)",
+                    "templateParameterRelId": 35000001006
+                },{
+                    "paramValue": "1",
+                    "templateParameterId":"1000005",
+                    "templateParameterName":"收费方式",
+                    "templateParameterRelId": 35000001004
+                }]
+            }]
+        }
+    输出：资费模板实例化预处理后的数据，可能包含枚举值说明参数(enums),枚举值说明的数据类型为列表，元素为字典，key为枚举值描述，value为取值，样例数据如下
+        {
+             "offerTariff": [{
+                "TARIFF_TEMPLATE_ID": "35000001",                      
+                "TARIFF_TEMPLATE_NAME": "套餐费199元/月,按日均额收到",   
+                "paramInst":{
+                    "paramValue": "1",
+                    "templateParameterId":"1000005",
+                    "templateParameterName":"收费方式",
+                    "templateParameterRelId": 35000001004,
+                    "enums":[{"月末收取":"2"},{"月初收取(一次性)":"1"}]
+                }]
+            }
+        }"""@zh ;
+  ex:hasParameter [ a ex:Parameter ; ex:paramName "offer_tariff_list" ; ex:paramType "list" ; ex:isOptional false ; ex:paramTypeNode [ a ex:ListType ] ] .
+
+ex:get_tariff_template a ex:Logic ;
+  rdfs:label "获取所有资费模板定义"@zh ;
+  rdfs:comment """@function_label: 获取所有资费模板定义
+    获取所有资费模板定义
+
+    Returns dict with keys:
+    - items: List[Any]|List[Dict[str, Any]] or List[OntologyObject] when as_objects=True"""@zh  .
+
+##################################
+# 逻辑函数关联定义 (bindLogic)
+##################################
+ex:sys_domain ex:bindLogic ex:get_tariff_template .
+ex:sys_domain ex:bindLogic ex:get_sys_domain .
+
+##################################
+# 对象定义(必须继承ex:Object)
+##################################
+ex:offer a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "销售品"@zh ;
+  rdfs:label "offer"@en ;
+  ex:hasPrimaryKey ex:offer_OFFER_ID ;
+  rdfs:comment ""@zh .
+
+ex:sys_domain a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "数据字典"@zh ;
+  rdfs:label "sys_domain"@en ;
+  rdfs:comment ""@zh .
+
+ex:tariff_template a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "资费模板定义"@zh ;
+  rdfs:label "tariff_template"@en ;
+  ex:hasPrimaryKey ex:tariff_template_TARIFF_TEMPLATE_ID ;
+  rdfs:comment ""@zh .
+
+ex:template_parameter a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "模板参数定义"@zh ;
+  rdfs:label "template_parameter"@en ;
+  ex:hasPrimaryKey ex:template_parameter_TEMPLATE_PARAM_ID ;
+  rdfs:comment ""@zh .
+
+ex:template_parameter_rel a owl:Class ;
+  rdfs:subClassOf ex:Object ;
+  rdfs:label "资费模板参数关系"@zh ;
+  rdfs:label "template_parameter_rel"@en ;
+  ex:hasPrimaryKey ex:template_parameter_rel_TEMPLATE_PARAMETER_REL_ID ;
+  rdfs:comment ""@zh .
+
+##################################
+# 数据属性定义
+# 每个对象的属性里，只能拥有一个primarykey
+# IRI命名规则：ex:{ObjectType}_{AttributeName}
+# AttributeName优先使用英文名(attribute_label)，如无则使用中文名(attribute_name)
+# 这样可以支持不同对象拥有同名但描述不同的属性
+##################################
+ex:template_parameter_CAN_ATTR a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "可属性"@zh .
+
+ex:template_parameter_rel_CAN_ATTR_FLAG a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "可属性标志"@zh ;
+  rdfs:label "CAN_ATTR_FLAG"@en .
+
+ex:template_parameter_rel_CAN_MULTI a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "可多选"@zh ;
+  rdfs:label "CAN_MULTI"@en .
+
+ex:template_parameter_rel_DEFAULT_VAL a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "默认值"@zh ;
+  rdfs:label "DEFAULT_VAL"@en .
+
+ex:template_parameter_DEFAULT_VALUE a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "默认值"@zh ;
+  rdfs:label "DEFAULT_VALUE"@en .
+
+ex:sys_domain_DOMAIN a owl:DatatypeProperty ;
+  rdfs:domain ex:sys_domain ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "字段取值"@zh ;
+  rdfs:label "DOMAIN"@en .
+
+ex:offer_EFF_DATE a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:date ;
+  rdfs:comment "记录生效时间。"@zh ;
+  rdfs:label "记录生效时间"@zh ;
+  rdfs:label "EFF_DATE"@en .
+
+ex:offer_EXP_DATE a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:date ;
+  rdfs:comment "记录失效日期。"@zh ;
+  rdfs:label "记录失效日期"@zh ;
+  rdfs:label "EXP_DATE"@en .
+
+ex:offer_EXT_OFFER_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "销售品的外部编码"@zh ;
+  rdfs:label "EXT_OFFER_ID"@en .
+
+ex:tariff_template_EXT_TARIFF_TEMPLATE_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "外部资费模板ID"@zh ;
+  rdfs:label "EXT_TARIFF_TEMPLATE_ID"@en .
+
+ex:template_parameter_rel_EXT_TEMPLATE_PARAMETER_REL_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "外部模板参数关联ID"@zh ;
+  rdfs:label "EXT_TEMPLATE_PARAMETER_REL_ID"@en .
+
+ex:template_parameter_EXT_TEMPLATE_PARAM_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "外部模板参数ID"@zh ;
+  rdfs:label "EXT_TEMPLATE_PARAM_ID"@en .
+
+ex:sys_domain_FIELD_NAME a owl:DatatypeProperty ;
+  rdfs:domain ex:sys_domain ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "字段名"@zh ;
+  rdfs:label "FIELD_NAME"@en .
+
+ex:sys_domain_NAME a owl:DatatypeProperty ;
+  rdfs:domain ex:sys_domain ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "取值说明"@zh ;
+  rdfs:label "NAME"@en .
+
+ex:offer_OFFER_DESC a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "记录销售品名称。"@zh ;
+  rdfs:label "记录销售品描述信息"@zh ;
+  rdfs:label "OFFER_DESC"@en .
+
+ex:offer_OFFER_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:int ;
+  rdfs:comment "记录套餐标志。 主要有：1-组合套餐，2-单一套餐，3-基础销售品，0-品牌类销售品"@zh ;
+  rdfs:label "销售品ID"@zh ;
+  rdfs:label "OFFER_ID"@en .
+
+ex:offer_OFFER_NAME a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "记录市场部定义的销售品名称，通常用于宣传口径。"@zh ;
+  rdfs:label "销售品名称"@zh ;
+  rdfs:label "OFFER_NAME"@en .
+
+ex:offer_OFFER_NBR a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "记录销售品业务编码。"@zh ;
+  rdfs:label "记录销售品业务编码"@zh ;
+  rdfs:label "OFFER_NBR"@en .
+
+ex:offer_OFFER_SYS_NAME a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "记录IT内部的销售品名称，通常包括：上市年月+销售品名称+资费等内容。"@zh ;
+  rdfs:label "记录IT内部的销售品名称"@zh ;
+  rdfs:label "OFFER_SYS_NAME"@en .
+
+ex:offer_OFFER_SYS_PY_NAME a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "记录IT内部的销售品名称的拼音缩写。"@zh ;
+  rdfs:label "销售品名称的拼音缩写"@zh ;
+  rdfs:label "OFFER_SYS_PY_NAME"@en .
+
+ex:offer_OFFER_SYS_TYPE a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "记录内部的系统分类，如可选包分单接入、多接入等对销售品类型更进一步的划分。LOVB=OFF-C-0064"@zh ;
+  rdfs:label "记录内部的系统分类"@zh ;
+  rdfs:label "OFFER_SYS_TYPE"@en .
+
+ex:offer_OFFER_TYPE a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "LOVB=OFF-0005"@zh ;
+  rdfs:label "销售品类型"@zh ;
+  rdfs:label "OFFER_TYPE"@en .
+
+ex:template_parameter_rel_ORDERNO a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "排序号"@zh ;
+  rdfs:label "ORDERNO"@en .
+
+ex:template_parameter_PARAMETER_DESC a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "参数描述"@zh ;
+  rdfs:label "PARAMETER_DESC"@en .
+
+ex:template_parameter_PARAMETER_NAME a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "参数名"@zh ;
+  rdfs:label "PARAMETER_NAME"@en .
+
+ex:template_parameter_rel_PARAM_DESC a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "参数描述"@zh ;
+  rdfs:label "PARAM_DESC"@en .
+
+ex:template_parameter_rel_PARAM_NBR a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "参数编号"@zh ;
+  rdfs:label "PARAM_NBR"@en .
+
+ex:offer_PRICING_PLAN_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:int ;
+  rdfs:comment "定价计划标识"@zh ;
+  rdfs:label "定价计划标识"@zh ;
+  rdfs:label "PRICING_PLAN_ID"@en .
+
+ex:tariff_template_PRIORITY a owl:DatatypeProperty ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "优先级"@zh ;
+  rdfs:label "PRIORITY"@en .
+
+ex:template_parameter_rel_PRIORITY_FACTOR a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "优先级因子"@zh ;
+  rdfs:label "PRIORITY_FACTOR"@en .
+
+ex:offer_REMARK a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "备注"@zh ;
+  rdfs:label "备注"@zh ;
+  rdfs:label "REMARK"@en .
+
+ex:template_parameter_rel_REQUIERD a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "必填标识"@zh ;
+  rdfs:label "REQUIERD"@en .
+
+ex:template_parameter_rel_SHOW_FLAG a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "显示标志"@zh ;
+  rdfs:label "SHOW_FLAG"@en .
+
+ex:tariff_template_STATUS_CD a owl:DatatypeProperty ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "状态码"@zh ;
+  rdfs:label "STATUS_CD"@en .
+
+ex:offer_STATUS_CD a owl:DatatypeProperty ;
+  rdfs:domain ex:offer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "记录销售品状态,LOVB=OFF-0003"@zh ;
+  rdfs:label "状态编码"@zh ;
+  rdfs:label "STATUS_CD"@en .
+
+ex:template_parameter_rel_STATUS_CD a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "状态码"@zh ;
+  rdfs:label "STATUS_CD"@en .
+
+ex:template_parameter_STATUS_CD a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "状态码"@zh ;
+  rdfs:label "STATUS_CD"@en .
+
+ex:sys_domain_TABLE_NAME a owl:DatatypeProperty ;
+  rdfs:domain ex:sys_domain ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "表名"@zh ;
+  rdfs:label "TABLE_NAME"@en .
+
+ex:template_parameter_rel_TARIFF_TEMPLATE_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "资费模板ID"@zh ;
+  rdfs:label "TARIFF_TEMPLATE_ID"@en .
+
+ex:tariff_template_TARIFF_TEMPLATE_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "资费模板ID"@zh ;
+  rdfs:label "TARIFF_TEMPLATE_ID"@en .
+
+ex:tariff_template_TEMPLATE_DESC a owl:DatatypeProperty ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "模板描述"@zh ;
+  rdfs:label "TEMPLATE_DESC"@en .
+
+ex:tariff_template_TEMPLATE_NAME a owl:DatatypeProperty ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "模板名称"@zh ;
+  rdfs:label "TEMPLATE_NAME"@en .
+
+ex:template_parameter_rel_TEMPLATE_PARAMETER_REL_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "模板参数关联ID"@zh ;
+  rdfs:label "TEMPLATE_PARAMETER_REL_ID"@en .
+
+ex:template_parameter_rel_TEMPLATE_PARAM_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "模板参数ID"@zh ;
+  rdfs:label "TEMPLATE_PARAM_ID"@en .
+
+ex:template_parameter_TEMPLATE_PARAM_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "模板参数ID"@zh ;
+  rdfs:label "TEMPLATE_PARAM_ID"@en .
+
+ex:template_parameter_TEMPLATE_PARAM_NBR a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:string ;
+  rdfs:comment ""@zh ;
+  rdfs:label "模板参数编号"@zh ;
+  rdfs:label "TEMPLATE_PARAM_NBR"@en .
+
+ex:template_parameter_TEMPLATE_PARAM_TYPE_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "模板参数类型ID"@zh ;
+  rdfs:label "TEMPLATE_PARAM_TYPE_ID"@en .
+
+ex:tariff_template_TEMPLATE_TYPE_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "模板类型ID"@zh ;
+  rdfs:label "TEMPLATE_TYPE_ID"@en .
+
+ex:template_parameter_VALUE_TYPE_ID a owl:DatatypeProperty ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range xsd:int ;
+  rdfs:comment ""@zh ;
+  rdfs:label "值类型ID"@zh ;
+  rdfs:label "VALUE_TYPE_ID"@en .
+
+##################################
+# 关系定义
+# 必须继承ex:custom_relation
+# 有正向关系就需定义一个反向关系
+# IRI命名规则：ex:{domain}_{relationLabel}_{range}
+# 这样可以支持多组对象对使用相同的关系标签
+##################################
+ex:tariff_template_requires_template_parameter_rel a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range ex:template_parameter_rel ;
+  rdfs:label "需要"@zh ;
+  ex:relationLabel "requires"@zh ;
+  ex:domainAttribute ex:tariff_template_TARIFF_TEMPLATE_ID ;
+  ex:rangeAttribute ex:template_parameter_rel_TARIFF_TEMPLATE_ID ;
+  rdfs:comment ""@zh .
+
+ex:template_parameter_rel_isPartof_tariff_template a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range ex:tariff_template ;
+  rdfs:label "属于"@zh ;
+  ex:relationLabel "isPartof"@zh ;
+  ex:domainAttribute ex:template_parameter_rel_TARIFF_TEMPLATE_ID ;
+  ex:rangeAttribute ex:tariff_template_TARIFF_TEMPLATE_ID ;
+  rdfs:comment "资源属于其他资源"@zh .
+
+ex:tariff_template_has_template_parameter_rel a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:tariff_template ;
+  rdfs:range ex:template_parameter_rel ;
+  rdfs:label "拥有"@zh ;
+  ex:relationLabel "has"@zh ;
+  ex:domainAttribute ex:tariff_template_TARIFF_TEMPLATE_ID ;
+  ex:rangeAttribute ex:template_parameter_rel_TARIFF_TEMPLATE_ID ;
+  rdfs:comment ""@zh .
+
+ex:template_parameter_isReferencedBy_template_parameter_rel a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:template_parameter ;
+  rdfs:range ex:template_parameter_rel ;
+  rdfs:label "被引用"@zh ;
+  ex:relationLabel "isReferencedBy"@zh ;
+  ex:domainAttribute ex:template_parameter_TEMPLATE_PARAM_ID ;
+  ex:rangeAttribute ex:template_parameter_rel_TEMPLATE_PARAM_ID ;
+  rdfs:comment ""@zh .
+
+ex:template_parameter_rel_BUSINESSOBJECTATTRIBUTEVALUE__INJECTIONLABEL_template_parameter a owl:ObjectProperty ;
+  rdfs:subPropertyOf ex:custom_relation ;
+  rdfs:domain ex:template_parameter_rel ;
+  rdfs:range ex:template_parameter ;
+  rdfs:label "引用"@zh ;
+  ex:relationLabel "BUSINESSOBJECTATTRIBUTEVALUE__INJECTIONLABEL"@zh ;
+  ex:domainAttribute ex:template_parameter_rel_TEMPLATE_PARAM_ID ;
+  ex:rangeAttribute ex:template_parameter_TEMPLATE_PARAM_ID ;
+  rdfs:comment ""@zh .
